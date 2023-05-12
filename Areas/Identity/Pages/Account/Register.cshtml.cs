@@ -71,6 +71,16 @@ namespace QuickShop.Areas.Identity.Pages.Account
         /// </summary>
         public class InputModel
         {
+            [Required]
+            [StringLength(100, MinimumLength = 1, ErrorMessage = "Firstname should be longer than 1 characters and shorter than 100 characters")]
+            [Display(Name = "Firstname")]
+            public string Firstname {get; set;}
+
+            [Required]
+            [StringLength(100, MinimumLength = 1, ErrorMessage = "Firstname should be longer than 1 characters and shorter than 100 characters")]
+            [Display(Name = "Surname")]
+            public string Surname {get; set;}
+
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
@@ -114,6 +124,8 @@ namespace QuickShop.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
+                user.Firstname = Input.Firstname;
+                user.Surname = Input.Surname;
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
