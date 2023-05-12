@@ -105,7 +105,8 @@ namespace QuickShop.Data
             builder.Entity<Chat>()
             .HasOne(chat => chat.ProductTransaction)
             .WithOne(productTransaction => productTransaction.Chat)
-            .HasForeignKey<Chat>(chat => chat.ProductTransactionId);
+            .HasForeignKey<Chat>(chat => chat.ProductTransactionId)
+            .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<ChatEntry>()
             .HasOne(chatEntry => chatEntry.Chat)
@@ -118,6 +119,12 @@ namespace QuickShop.Data
             .WithMany(person => person.ChatEntries)
             .HasForeignKey(chatEntry => chatEntry.PersonId)
             .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<DeliveryTypePrice>()
+            .HasOne(deliveryTypePrice => deliveryTypePrice.DeliveryType)
+            .WithMany(deliveryType => deliveryType.DeliveryTypePrices)
+            .HasForeignKey(deliveryTypePrice => deliveryTypePrice.DeliveryTypeId)
+            .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
