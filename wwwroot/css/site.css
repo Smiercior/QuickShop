@@ -16,3 +16,31 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.orange{
+  color: orange;
+}
+
+.search{
+  height: 40px;
+  font-size: medium;
+}
+
+.searchBtn{
+  background-color: rgb(233, 109, 7);
+  color: white;
+  border-width: 0px;
+}
+
+.imgSize{
+  height: 100%;
+  width: 100%;
+}
+
+.bg-gray{
+  background-color: rgb(241, 241, 241);
+}
+
+.bg-white{
+  background-color: white;
+}
