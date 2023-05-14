@@ -42,6 +42,13 @@ namespace QuickShop.Data
             .IsRequired(false)
             .OnDelete(DeleteBehavior.SetNull);
 
+            builder.Entity<Product>()
+            .HasOne(product => product.Condition)
+            .WithMany(condition => condition.Products)
+            .HasForeignKey(product => product.ConditionId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.SetNull);
+
             builder.Entity<ProductImage>()
             .HasOne(productImage => productImage.Product)
             .WithMany(product => product.ProductImages)

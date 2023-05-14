@@ -32,6 +32,10 @@ namespace QuickShop.Models
         public int? CategoryId {get; set;}
         public virtual Category Category {get; set;}
 
+        [ForeignKey("Condition")]
+        public int? ConditionId {get; set;}
+        public virtual Condition Condition {get; set;}
+
         public virtual ICollection<ProductImage> ProductImages {get; set;}
 
         public virtual ICollection<ProductPrice> ProductPrices {get; set;}
