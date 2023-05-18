@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using QuickShop.Models;
 using QuickShop.Data;
+using QuickShop.Services;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 
@@ -11,10 +12,13 @@ namespace QuickShop.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _dbContext;
 
-        public ProductController(ILogger<HomeController> logger, ApplicationDbContext dbContext)
+        private readonly ISellProductService _sellProductService;
+
+        public ProductController(ILogger<HomeController> logger, ApplicationDbContext dbContext, ISellProductService sellProductService)
         {
             _logger = logger;
             _dbContext = dbContext;
+            _sellProductService = sellProductService;
         }
 
         [Authorize]
@@ -32,7 +36,10 @@ namespace QuickShop.Controllers
             // }   
             if(ModelState.IsValid)
             {
-                Console.WriteLine("oksdddddddddddddddddsdsdsdsdsdsdsd");
+                if(_sellProductService.ValidateSellProductModel(sellProductModel))
+                {
+                    return View();
+                }    
             }
             else
             {
@@ -42,9 +49,9 @@ namespace QuickShop.Controllers
                     {
                         Console.WriteLine(error.ErrorMessage);
                     }
-                }
+                }        
             }
-            return View();
+            return RedirectToAction("SellProduct", "Home", new {errorMessage = "Can't sell a product because the data is invalid"});
         }
 
         [HttpGet]

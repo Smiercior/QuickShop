@@ -4,6 +4,10 @@
 }
 
 <div class="container-fluid p-0 bg-gray">
+    @if(!string.IsNullOrEmpty(ViewData["ErrorMessage"] as string))
+    {
+         <h4 class="alert alert-danger w-50 mb-3 mt-3 m-auto">@ViewData["ErrorMessage"]</h4>
+    }
     <form method="post" asp-controller="Product" asp-action="Product" enctype="multipart/form-data">
         <div class="row w-100">
             <div class="col-8">
@@ -53,7 +57,7 @@
                         </div>
                         
                         <div class="form-group">
-                            <label asp-for="Name" class="h4 p-0 mt-4">Condition*</label><br>
+                            <label asp-for="Name" class="h4 p-0 mt-4">Condition</label><br>
                             <select asp-for="Condition" class="w-50 p-2">
                                 @foreach (var condition in ViewBag.Conditions)
                                 {
@@ -151,7 +155,7 @@
 
                 // Validate image files number
                 if(imageFiles.length > 5){
-                    warningImagesSpan.innerHTML = "Too many photos";
+                    warningImagesSpan.innerHTML = "Only 5 images are allowed";
                     clearImageInput();
                 }
                 else{

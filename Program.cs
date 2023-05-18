@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using QuickShop.Data;
 using QuickShop.Models;
 using QuickShop.Areas.Identity.Data;
+using QuickShop.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,8 @@ builder.Services.AddIdentity<Person, IdentityRole>()
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddRazorPages();
+
+builder.Services.AddScoped<ISellProductService, SellProductService>();
 
 // builder.Services.AddDefaultIdentity<Person>(options => options.SignIn.RequireConfirmedAccount = true)
 //     .AddEntityFrameworkStores<ApplicationDbContext>();

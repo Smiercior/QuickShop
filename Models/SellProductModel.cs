@@ -14,6 +14,7 @@ namespace QuickShop.Models
         [StringLength(100000, MinimumLength = 4, ErrorMessage = "Product description should be longer than 4 characters and shorter than 100000 characters")]
         public string Description {get; set;}
 
+        [Required]
         [StringLength(100, MinimumLength = 1, ErrorMessage = "Category should be longer than 1 characters and shorter than 100 characters")]
         public string Category {get; set;}
 
