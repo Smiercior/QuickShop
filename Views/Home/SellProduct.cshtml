@@ -1,0 +1,208 @@
+@model SellProductModel
+@{
+    ViewData["Title"] = "Sell Product Page";
+}
+
+<div class="container-fluid p-0 bg-gray">
+    <form method="post" asp-controller="Product" asp-action="Product" enctype="multipart/form-data">
+        <div class="row w-100">
+            <div class="col-8">
+                <div class="row bg-white w-75 mt-2 m-auto p-2 rounded-1">
+                    <div class="col-1">
+                        <img src="~/icons/camera.png">
+                    </div>
+                    <div class="col-6">
+                        <h3>Add photos</h3>
+                        <h5 class="text-secondary">You can add up to 5 photos, maks 5MB</h5>
+                    </div>
+                </div>
+
+                <div class="row bg-white w-75 mt-1 m-auto p-2 rounded-1 text-center">
+                    <span class="text-primary">Drag or drop the photo here</span>
+                </div>
+                <div class="row bg-white w-75 m-auto p-2 text-center">
+                    <span class="text-secondary">Or</span>
+                </div>
+                <div class="row bg-white w-75 m-auto p-2 rounded-1 text-center">
+                    <input class="w-50 m-auto" name="imageFiles" id="imageFiles" type="file" accept=".jpg, .jpeg, .png" multiple>
+                    <span class="text-danger" id="imageFilesWarning"></span>
+                </div>
+                    <div class="row bg-white w-75 mt-1 m-auto p-4 rounded-1">
+                        <div class="form-group">
+                            <label asp-for="Name" class="h4 p-0">Name*</label>
+                            <input asp-for="Name" class="form-control w-50 p-2" placeholder="Write what you wanna sell">
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Name" class="h4 p-0 mt-4">Description*</label><br>
+                            <textarea asp-for="Description" class="w-50 p-2" placeholder="Tell buyers something more"></textarea><br>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label asp-for="Name" class="h4 p-0 mt-4">Category</label><br>
+                            <select asp-for="Category" class="w-50 p-2">
+                                <option>None</option>
+                                @foreach (var category in ViewBag.Categories)
+                                {
+                                    <option>@category.Name</option>
+                                }
+                            </select><br>
+                            <span asp-validation-for="Category" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label asp-for="Name" class="h4 p-0 mt-4">Condition*</label><br>
+                            <select asp-for="Condition" class="w-50 p-2">
+                                @foreach (var condition in ViewBag.Conditions)
+                                {
+                                    <option>@condition.Name</option>
+                                }
+                            </select><br>
+                            <span asp-validation-for="Condition" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Name" class="h4 p-0 mt-4">Price*</label><br>
+                            <input asp-for="Price" id="Price" class="w-50 p-2" placeholder="0.00"><br>
+                            <span asp-validation-for="Price" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label asp-for="Name" class="p p-0 mt-4">Amount*</label><br>
+                            <input asp-for="Amount" class="w-50 p-2" value="1"><br>
+                            <span asp-validation-for="Amount" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <h4 class="h4 p-0 mt-4">Delivery type*</h4>
+                            @foreach (var deliveryType in ViewBag.DeliveryTypes)
+                            {
+                                <div class="row mt-3 d-flex align-items-center">
+                                    <div class="col-1">
+                                        <input class="checkbox-lg" type="checkbox" name="DeliveryTypeCheckboxes" value="@deliveryType.Name">
+                                    </div>
+                                    <div class="col-8">
+                                        <span class="text-secondary h5 fw-normal">@deliveryType.Name</span>
+                                    </div>
+                                    <div class="col-3">
+                                        <input class="w-50 text-center borderGray" type="number" name="DeliveryTypePrices[@deliveryType.Name]" value="@deliveryType.Details">
+                                    </div>
+                                </div>  
+                            }
+                            <span class="text-danger" id="deliveryTypeWarning"></span>
+                        </div>
+                    </div>   
+            </div>
+            <div class="col-4">
+                <div class="row bg-white w-100 mt-2 p-2 rounded-1 sticky-top" style="top: 10px;">
+                    <h3 class="orange ps-4 p-3">Your final price</h3>
+                    <ul class="ps-5 text-secondary">
+                        <li>
+                            <p>Buyers can pay quickly using online payment methods<p></p>
+                        </li>
+                        <li>
+                            <p>Cheap and convenient delivery with InPost<p></p>
+                        </li>
+                    </ul>
+                    <div class="border border-1 bg-gray w-90 ms-4"></div>
+                    <h4 class="text-center text-secondary mt-2"><span id="PriceText">0.00</span> PLN</h4>
+                    <button type="submit" class="btn btn-secondary mt-2 mb-2 w-75 m-auto" id="submitBtn">Sell product</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        $(function() {
+            var input = document.getElementById("Price");
+            var priceText = document.getElementById("PriceText");
+            var imagesInput = document.getElementById("imageFiles");
+            var warningImagesSpan = document.getElementById("imageFilesWarning");
+            var warningDeliverySpan = document.getElementById("deliveryTypeWarning");
+            var submitBtn = document.getElementById("submitBtn");
+
+            input.addEventListener("input", updatedPrice);
+            imagesInput.addEventListener("input", updatedImages)
+            submitBtn.addEventListener("click", onSubmitBtn)
+
+            function updatedPrice(e){
+                var price = parseFloat(e.target.value);
+                if(!isNaN(price) && price > 0)
+                {
+                    priceText.innerHTML = price.toFixed(2);
+                }  
+                else
+                {
+                    priceText.innerHTML = "0.00";
+                }    
+            }
+
+            function updatedImages(e){
+                const imageFiles = imagesInput.files;
+                const maxImagesSize = 5.00;
+                let availableExtension = ["png", "jpeg", "jpg"];
+                let imageFilesSize = 0.00;
+
+                // Validate image files number
+                if(imageFiles.length > 5){
+                    warningImagesSpan.innerHTML = "Too many photos";
+                    clearImageInput();
+                }
+                else{
+                    // Validate image files extensions
+                    for(let i = 0; i < imageFiles.length; i++){
+                        let file = imageFiles.item(i);
+                        let fileExtension = file.name.substring(file.name.lastIndexOf('.')+1).toLowerCase();
+                        if(!availableExtension.includes(fileExtension)){
+                            warningImagesSpan.innerHTML = "Only *.png;*.jpeg;*.jpg file extensions";
+                            clearImageInput();
+                            return;
+                        }
+                        imageFilesSize += file.size;
+                    }
+                    // Validate image files size
+                    if(imageFilesSize/1048576 > maxImagesSize){
+                        warningImagesSpan.innerHTML = "Maks images size is 5MB";
+                        clearImageInput();
+                        return;
+                    }
+                    warningImagesSpan.innerHTML = "";
+                }
+            }
+
+            function clearImageInput(){
+                imagesInput.value = null;
+            }
+
+            function onSubmitBtn(e){
+                const deliveryInputs = document.getElementsByName("DeliveryTypeCheckboxes");
+                let isAtLeastOneSelected = false;
+                console.log(deliveryInputs);
+
+                // Validate if at least one delivery type is selected
+                for(let i = 0; i < deliveryInputs.length; i++)
+                {
+                    let input = deliveryInputs[i];
+                    if(input.checked){
+                        isAtLeastOneSelected = true;
+                        break;
+                    }
+                }
+
+                if(isAtLeastOneSelected == false){
+                    warningDeliverySpan.innerHTML = "Select at least one delivery type";
+                    e.preventDefault();
+                }
+                else{
+                    warningDeliverySpan.innerHTML = "";
+                }
+            }
+        });
+    </script>
+}

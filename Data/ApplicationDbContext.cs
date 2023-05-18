@@ -20,6 +20,8 @@ namespace QuickShop.Data
         public DbSet<Chat> Chats {get; set;}
         public DbSet<ChatEntry> ChatEntries {get; set;}
 
+        public DbSet<Condition> Conditions {get; set;}
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
@@ -98,13 +100,6 @@ namespace QuickShop.Data
             .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<ProductTransaction>()
-            .HasOne(productTransaction => productTransaction.DeliveryTypePrice)
-            .WithMany(deliveryTypePrice => deliveryTypePrice.ProductTransactions)
-            .HasForeignKey(productTransaction => productTransaction.DeliveryTypePriceId)
-            .IsRequired(false)
-            .OnDelete(DeleteBehavior.SetNull);
-
-            builder.Entity<ProductTransaction>()
             .HasOne(productTransaction => productTransaction.Chat)
             .WithOne(chat => chat.ProductTransaction)
             .HasForeignKey<ProductTransaction>(productTransaction => productTransaction.ChatId);
@@ -131,6 +126,12 @@ namespace QuickShop.Data
             .HasOne(deliveryTypePrice => deliveryTypePrice.DeliveryType)
             .WithMany(deliveryType => deliveryType.DeliveryTypePrices)
             .HasForeignKey(deliveryTypePrice => deliveryTypePrice.DeliveryTypeId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<DeliveryTypePrice>()
+            .HasOne(deliveryTypePrice => deliveryTypePrice.ProductTransaction)
+            .WithMany(productTransaction => productTransaction.DeliveryTypePrices)
+            .HasForeignKey(deliveryTypePrice => deliveryTypePrice.ProductTransactionId)
             .OnDelete(DeleteBehavior.Cascade);
         }
     }

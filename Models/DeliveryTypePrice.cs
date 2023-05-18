@@ -16,6 +16,8 @@ namespace QuickShop.Models
         public int DeliveryTypeId {get; set;}
         public virtual DeliveryType DeliveryType {get; set;}
 
-        public virtual ICollection<ProductTransaction> ProductTransactions {get; set;}
+        [ForeignKey("ProductTransaction")]
+        public int ProductTransactionId {get; set;}
+        public virtual ProductTransaction ProductTransaction {get; set;}
     }
 }

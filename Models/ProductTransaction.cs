@@ -36,10 +36,6 @@ namespace QuickShop.Models
         public int? DeliveryTypeId {get; set;}
         public virtual DeliveryType DeliveryType {get; set;}
 
-        [ForeignKey("DeliveryTypePrice")]
-        public int? DeliveryTypePriceId {get; set;}
-        public virtual DeliveryTypePrice DeliveryTypePrice {get; set;}
-
         [ForeignKey("Chat")]
         public int ChatId {get; set;}
         public virtual Chat Chat {get; set;}
@@ -55,5 +51,7 @@ namespace QuickShop.Models
         [ForeignKey("Person")]
         public string PersonId {get; set;}
         public virtual Person Person {get; set;}
+
+         public virtual ICollection<DeliveryTypePrice> DeliveryTypePrices {get; set;}
     }
 }

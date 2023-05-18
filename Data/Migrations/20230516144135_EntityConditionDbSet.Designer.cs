@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuickShop.Data;
 
@@ -11,9 +12,10 @@ using QuickShop.Data;
 namespace QuickShop.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230516144135_EntityConditionDbSet")]
+    partial class EntityConditionDbSet
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -352,14 +354,9 @@ namespace QuickShop.Migrations
                     b.Property<float>("Price")
                         .HasColumnType("real");
 
-                    b.Property<int>("ProductTransactionId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("DeliveryTypeId");
-
-                    b.HasIndex("ProductTransactionId");
 
                     b.ToTable("DeliveryTypePrices");
                 });
@@ -517,6 +514,9 @@ namespace QuickShop.Migrations
                         .IsRequired()
                         .HasColumnType("int");
 
+                    b.Property<int?>("DeliveryTypePriceId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("Paid")
                         .HasColumnType("bit");
 
@@ -545,6 +545,8 @@ namespace QuickShop.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DeliveryTypeId");
+
+                    b.HasIndex("DeliveryTypePriceId");
 
                     b.HasIndex("PersonId");
 
@@ -680,15 +682,7 @@ namespace QuickShop.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("QuickShop.Models.ProductTransaction", "ProductTransaction")
-                        .WithMany("DeliveryTypePrices")
-                        .HasForeignKey("ProductTransactionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("DeliveryType");
-
-                    b.Navigation("ProductTransaction");
                 });
 
             modelBuilder.Entity("QuickShop.Models.Product", b =>
@@ -765,6 +759,11 @@ namespace QuickShop.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("QuickShop.Models.DeliveryTypePrice", "DeliveryTypePrice")
+                        .WithMany("ProductTransactions")
+                        .HasForeignKey("DeliveryTypePriceId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("QuickShop.Models.Person", "Person")
                         .WithMany("ProductTransactions")
                         .HasForeignKey("PersonId")
@@ -784,6 +783,8 @@ namespace QuickShop.Migrations
                         .IsRequired();
 
                     b.Navigation("DeliveryType");
+
+                    b.Navigation("DeliveryTypePrice");
 
                     b.Navigation("Person");
 
@@ -814,6 +815,11 @@ namespace QuickShop.Migrations
                     b.Navigation("ProductTransactions");
                 });
 
+            modelBuilder.Entity("QuickShop.Models.DeliveryTypePrice", b =>
+                {
+                    b.Navigation("ProductTransactions");
+                });
+
             modelBuilder.Entity("QuickShop.Models.Product", b =>
                 {
                     b.Navigation("ProductImages");
@@ -834,8 +840,6 @@ namespace QuickShop.Migrations
                 {
                     b.Navigation("Chat")
                         .IsRequired();
-
-                    b.Navigation("DeliveryTypePrices");
                 });
 
             modelBuilder.Entity("QuickShop.Models.Person", b =>

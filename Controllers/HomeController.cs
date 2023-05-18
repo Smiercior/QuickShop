@@ -1,21 +1,35 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using QuickShop.Models;
+using QuickShop.Data;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 
 namespace QuickShop.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly ApplicationDbContext _dbContext;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext dbContext)
         {
             _logger = logger;
+            _dbContext = dbContext;
         }
 
         public IActionResult Index()
         {
             return View();
+        }
+
+        [Authorize]
+        public IActionResult SellProduct()
+        {
+            ViewBag.Categories = _dbContext.Categories.ToList();
+            ViewBag.Conditions = _dbContext.Conditions.ToList();
+            ViewBag.DeliveryTypes = _dbContext.DeliveryTypes.ToList();
+            var sellProuctModel = new SellProductModel();
+            return View(sellProuctModel);
         }
 
         public IActionResult Privacy()

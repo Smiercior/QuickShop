@@ -17,6 +17,10 @@ body {
   margin-bottom: 60px;
 }
 
+.w-90{
+  width: 90%;
+}
+
 .orange{
   color: orange;
 }
@@ -43,4 +47,15 @@ body {
 
 .bg-white{
   background-color: white;
+}
+
+.checkbox-lg{
+  top: .8rem;
+  scale: 1.4;
+  margin-right: 0.7rem;
+}
+
+.borderGray{
+  border-color: lightgray;
+  border-radius: 10%;
 }
