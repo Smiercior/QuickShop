@@ -1,3 +1,4 @@
+#nullable enable
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -16,8 +17,10 @@ namespace QuickShop.Models
         public int DeliveryTypeId {get; set;}
         public virtual DeliveryType DeliveryType {get; set;}
 
-        [ForeignKey("ProductTransaction")]
-        public int ProductTransactionId {get; set;}
-        public virtual ProductTransaction ProductTransaction {get; set;}
+        [ForeignKey("Product")]
+        public int? ProductId {get; set;}
+        public virtual Product Product {get; set;}
+
+        public virtual ICollection<ProductTransaction> ProductTransactions {get; set;}
     }
 }

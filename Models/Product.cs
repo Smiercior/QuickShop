@@ -22,7 +22,7 @@ namespace QuickShop.Models
         [StringLength(100000, MinimumLength = 4, ErrorMessage = "Product description should be longer than 4 characters and shorter than 100000 characters")]
         public string Description {get; set;}
 
-        public string ParametersLink {get; set;}
+        public string? ParametersLink {get; set;}
 
         [ForeignKey("Person")]
         public string PersonId {get; set;}
@@ -43,5 +43,7 @@ namespace QuickShop.Models
         public virtual ICollection<ProductRating> ProductRatings {get; set;}
 
         public virtual ICollection<ProductTransaction> ProductTransactions {get; set;}
+
+        public virtual ICollection<DeliveryTypePrice> DeliveryTypePrices {get; set;}
     }
 }

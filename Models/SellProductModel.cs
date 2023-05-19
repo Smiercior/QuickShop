@@ -23,8 +23,8 @@ namespace QuickShop.Models
         public string Condition {get; set;}
 
         [Required]
-        [Range(0.10, 10000)]
-        public float Price {get; set;}
+        // [Range(0.10, 10000)]
+        public string Price {get; set;}
 
         [Required]
         [Range(1, 10000)]

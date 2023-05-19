@@ -17,7 +17,5 @@ namespace QuickShop.Models
         public string Details {get; set;}
 
         public virtual ICollection<DeliveryTypePrice> DeliveryTypePrices {get; set;}
-
-        public virtual ICollection<ProductTransaction> ProductTransactions {get; set;}
     }
 }

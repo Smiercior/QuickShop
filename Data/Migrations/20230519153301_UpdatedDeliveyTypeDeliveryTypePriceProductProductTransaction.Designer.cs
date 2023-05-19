@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuickShop.Data;
 
@@ -11,9 +12,10 @@ using QuickShop.Data;
 namespace QuickShop.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230519153301_UpdatedDeliveyTypeDeliveryTypePriceProductProductTransaction")]
+    partial class UpdatedDeliveyTypeDeliveryTypePriceProductProductTransaction
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -355,11 +357,16 @@ namespace QuickShop.Migrations
                     b.Property<int?>("ProductId")
                         .HasColumnType("int");
 
+                    b.Property<int>("ProductTransactionId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("DeliveryTypeId");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("ProductTransactionId");
 
                     b.ToTable("DeliveryTypePrices");
                 });
@@ -683,9 +690,17 @@ namespace QuickShop.Migrations
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.NoAction);
 
+                    b.HasOne("QuickShop.Models.ProductTransaction", "ProductTransaction")
+                        .WithMany()
+                        .HasForeignKey("ProductTransactionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("DeliveryType");
 
                     b.Navigation("Product");
+
+                    b.Navigation("ProductTransaction");
                 });
 
             modelBuilder.Entity("QuickShop.Models.Product", b =>

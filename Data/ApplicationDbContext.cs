@@ -94,9 +94,10 @@ namespace QuickShop.Data
             .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<ProductTransaction>()
-            .HasOne(productTransaction => productTransaction.DeliveryType)
-            .WithMany(deliveryType => deliveryType.ProductTransactions)
-            .HasForeignKey(productTransaction => productTransaction.DeliveryTypeId)
+            .HasOne(productTransaction => productTransaction.DeliveryTypePrice)
+            .WithMany(deliveryTypePrice => deliveryTypePrice.ProductTransactions)
+            .HasForeignKey(productTransaction => productTransaction.DeliveryTypePriceId)
+            .IsRequired(false)
             .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<ProductTransaction>()
@@ -129,10 +130,11 @@ namespace QuickShop.Data
             .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<DeliveryTypePrice>()
-            .HasOne(deliveryTypePrice => deliveryTypePrice.ProductTransaction)
-            .WithMany(productTransaction => productTransaction.DeliveryTypePrices)
-            .HasForeignKey(deliveryTypePrice => deliveryTypePrice.ProductTransactionId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .HasOne(deliveryTypePrice => deliveryTypePrice.Product)
+            .WithMany(product => product.DeliveryTypePrices)
+            .HasForeignKey(deliveryTypePrice => deliveryTypePrice.ProductId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

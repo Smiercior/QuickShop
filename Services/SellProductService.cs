@@ -1,5 +1,7 @@
 using QuickShop.Data;
 using QuickShop.Models;
+using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace QuickShop.Services
 {
@@ -44,7 +46,7 @@ namespace QuickShop.Services
             List<Condition> conditions = _dbContext.Conditions.ToList();
             if(sellProductModel.Condition == null)
             {
-                 Console.WriteLine("Condition is null");
+                Console.WriteLine("Condition is null");
                 return false;
             }
             foreach(var condition in conditions)
@@ -57,14 +59,71 @@ namespace QuickShop.Services
                 return false;
             }
 
-            // Validate if delivery prices are correct
+            // Validate if delivery types is correct
+            List<DeliveryType> deliveryTypes = _dbContext.DeliveryTypes.ToList();
+            bool isCorrect;
+            foreach(var deliveryTypeCheckbox in sellProductModel.DeliveryTypeCheckboxes)
+            {
+                isCorrect = false;
+                foreach(var deliveryType in deliveryTypes)
+                {
+                    if(deliveryTypeCheckbox == deliveryType.Name)
+                    {
+                        isCorrect = true;
+                        break;
+                    }
+                }
+                if(isCorrect == false)
+                {
+                    Console.WriteLine($"Delivery type name incorrect");
+                    return false;
+                }
+            }
+
+            // Validate if price is correct
             float price = 0.00f;
+            var cultureInfo = CultureInfo.InvariantCulture;
+            NumberStyles styles = NumberStyles.Number;
+            if(Regex.IsMatch(sellProductModel.Price, @"^(:?[\d,]+\.)*\d+$"))
+            {
+                cultureInfo = new CultureInfo("en-US");
+            }
+            else if(Regex.IsMatch(sellProductModel.Price, @"^(:?[\d.]+,)*\d+$"))
+            {
+                cultureInfo = new CultureInfo("pl-PL");
+            }
+            if(float.TryParse(sellProductModel.Price, styles, cultureInfo, out price))
+            {
+                if(price <= 0 || price >= 10000)
+                {
+                    Console.WriteLine($"Price should be grater than 0 and lesser than 10000");
+                    return false;
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Price is invalid");
+                return false;
+            }
+
+            // Validate if delivery prices are correct
+            float deliveryPrice = 0.00f;
             foreach(KeyValuePair<String, String> deliveryTypePrice in sellProductModel.DeliveryTypePrices)
             {
-                price = 0.00f;
-                if(float.TryParse(deliveryTypePrice.Value, out price))
+                deliveryPrice = 0.00f;
+
+                if(Regex.IsMatch(deliveryTypePrice.Value, @"^(:?[\d,]+\.)*\d+$"))
                 {
-                    if(price <= 0 || price >= 1000)
+                    cultureInfo = new CultureInfo("en-US");
+                }
+                else if(Regex.IsMatch(deliveryTypePrice.Value, @"^(:?[\d.]+,)*\d+$"))
+                {
+                    cultureInfo = new CultureInfo("pl-PL");
+                }
+
+                if(float.TryParse(deliveryTypePrice.Value, styles, cultureInfo, out deliveryPrice))
+                {
+                    if(deliveryPrice <= 0 || deliveryPrice >= 1000)
                     {
                         Console.WriteLine($"Delivery type {deliveryTypePrice.Key} price should be grater than 0 and lesser than 1000");
                         return false;

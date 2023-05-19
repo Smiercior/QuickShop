@@ -1,3 +1,4 @@
+#nullable enable
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -32,10 +33,6 @@ namespace QuickShop.Models
         [StringLength(100, MinimumLength = 1, ErrorMessage = "Apartment number should be longer than 1 characters and shorter than 100 characters")]
         public string ApartmentNumber {get; set;}
 
-        [ForeignKey("DeliveryType")]
-        public int? DeliveryTypeId {get; set;}
-        public virtual DeliveryType DeliveryType {get; set;}
-
         [ForeignKey("Chat")]
         public int ChatId {get; set;}
         public virtual Chat Chat {get; set;}
@@ -52,6 +49,8 @@ namespace QuickShop.Models
         public string PersonId {get; set;}
         public virtual Person Person {get; set;}
 
-         public virtual ICollection<DeliveryTypePrice> DeliveryTypePrices {get; set;}
+        [ForeignKey("DeliveryTypePrice")]
+        public int? DeliveryTypePriceId {get; set;}
+        public virtual DeliveryTypePrice DeliveryTypePrice {get; set;}
     }
 }
