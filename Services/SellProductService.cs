@@ -64,7 +64,7 @@ namespace QuickShop.Services
                 price = 0.00f;
                 if(float.TryParse(deliveryTypePrice.Value, out price))
                 {
-                    if(price <= 0 || price > 1000)
+                    if(price <= 0 || price >= 1000)
                     {
                         Console.WriteLine($"Delivery type {deliveryTypePrice.Key} price should be grater than 0 and lesser than 1000");
                         return false;
