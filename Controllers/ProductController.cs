@@ -48,11 +48,15 @@ namespace QuickShop.Controllers
                     // Save data to database and save all image files if they are uploded by user
                     using(var transaction = _dbContext.Database.BeginTransaction())
                     {
+                        bool filesCreated = false;
+                        int productId = -1;
+
                         try
                         {
                             var category = _dbContext.Categories.FirstOrDefault(c => c.Name == sellProductModel.Category);
                             var condition = _dbContext.Conditions.FirstOrDefault(cond => cond.Name == sellProductModel.Condition);
 
+                            // Add product object
                             var product = new Product();
                             product.Name = sellProductModel.Name;
                             product.Amount = sellProductModel.Amount;
@@ -63,6 +67,7 @@ namespace QuickShop.Controllers
                             _dbContext.Products.Add(product);
                             _dbContext.SaveChanges();
 
+                            // Add product price object
                             var productPrice = new ProductPrice();
                             var cultureInfo = CultureInfo.InvariantCulture;
                             NumberStyles styles = NumberStyles.Number;
@@ -79,6 +84,7 @@ namespace QuickShop.Controllers
                             productPrice.ProductId = product.Id;
                             _dbContext.ProductPrices.Add(productPrice);
 
+                            // Add delivery type price objects
                             foreach(var deliveryTypeCheckbox in sellProductModel.DeliveryTypeCheckboxes)
                             {
                                 var deliveryType = _dbContext.DeliveryTypes.FirstOrDefault(dT => dT.Name == deliveryTypeCheckbox);
@@ -96,7 +102,31 @@ namespace QuickShop.Controllers
                                 deliveryTypePrice.ProductId = product.Id;
                                 _dbContext.DeliveryTypePrices.Add(deliveryTypePrice);
                             }
+                            _dbContext.SaveChanges();
 
+                            // Save images files if they are included
+                            if(sellProductModel.imageFiles != null)
+                            {
+                                List<string> imageLinks;
+                                if(_sellProductService.SaveImageFiles(sellProductModel.imageFiles, out imageLinks, product.Id) == false)
+                                {
+                                    throw new Exception("Can't save files");
+                                }
+                                else
+                                {
+                                    filesCreated = true;
+                                    productId = product.Id;
+                                }
+                                foreach(var imageLink in imageLinks)
+                                {
+                                    var productImage = new ProductImage();
+                                    productImage.ImageLink = imageLink;
+                                    productImage.ProductId = product.Id;
+                                    _dbContext.ProductImages.Add(productImage);
+                                }
+                            }
+
+                            // Save and commit all changes
                             _dbContext.SaveChanges();
                             transaction.Commit();
                         }
@@ -104,6 +134,11 @@ namespace QuickShop.Controllers
                         {
                             transaction.Rollback();
                             Console.WriteLine($"Error occured during saving data: {ex.Message}");
+                            if(filesCreated == true)
+                            {
+                                Console.WriteLine(productId);
+                                _sellProductService.DeleteImageFiles(productId);
+                            }
                         }
                     }
                     return View();

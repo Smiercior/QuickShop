@@ -9,16 +9,24 @@ namespace QuickShop.Services
     {
         public bool ValidateSellProductModel(SellProductModel sellProductModel);
 
-        public void SaveImageFiles();
+        public bool SaveImageFiles(List<IFormFile> imageFiles, out List<string> imageLinks, int productId);
+
+        public void DeleteImageFiles(int productId);
     }
 
     public class SellProductService : ISellProductService
     {
         private readonly ApplicationDbContext _dbContext;
 
-        public SellProductService(ApplicationDbContext dbContext)
+        private readonly IWebHostEnvironment _hostEnvironment;
+
+        private string imagesFolder;
+
+        public SellProductService(ApplicationDbContext dbContext, IWebHostEnvironment hostEnvironment)
         {
             _dbContext = dbContext;
+            _hostEnvironment = hostEnvironment;
+            imagesFolder = Path.Combine(_hostEnvironment.WebRootPath, "Media\\ProductImages");
         }
 
         public bool ValidateSellProductModel(SellProductModel sellProductModel)
@@ -175,9 +183,61 @@ namespace QuickShop.Services
             return true;
         }
 
-        public void SaveImageFiles()
+        public bool SaveImageFiles(List<IFormFile> imageFiles, out List<string> imageLinks, int productId)
         {
+            string productImagesFolderPath = Path.Combine(imagesFolder, productId.ToString());
+            string filePath = "";
+            imageLinks = new List<string>();
+            
+            if(!Directory.Exists(productImagesFolderPath))
+            {
+                Directory.CreateDirectory(productImagesFolderPath);
 
+                foreach(var file in imageFiles)
+                {
+                    try
+                    {
+                        if(file.Length > 0)
+                        {
+                            filePath = Path.Combine(imagesFolder, productId.ToString(), file.FileName);
+                            imageLinks.Add(file.FileName);
+                            using(Stream fileStream = new FileStream(filePath, FileMode.Create))
+                            {
+                                file.CopyTo(fileStream);
+                            }
+                        }
+                    }
+                    catch(NullReferenceException ex)
+                    {
+                        Console.WriteLine("There aren't any image files " + ex.Message);
+                        return false;
+                    }
+                    catch(UnauthorizedAccessException ex)
+                    {
+                        Console.WriteLine($"Don't have access to save file in the path {filePath} " + ex.Message);
+                        return false;
+                    }
+                    catch(DirectoryNotFoundException ex)
+                    {
+                        Console.WriteLine($"The directory {productImagesFolderPath} isn't exist " + ex.Message);
+                        return false;
+                    }
+                }
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public void DeleteImageFiles(int productId)
+        {
+            string productImagesFolderPath = Path.Combine(imagesFolder, productId.ToString());
+            if(Directory.Exists(productImagesFolderPath))
+            {
+                Directory.Delete(productImagesFolderPath, true);
+            }
         }
     }
 }
