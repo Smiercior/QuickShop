@@ -5,4 +5,5 @@
 ## Screenshots
 ![Home](Screenshots/Home.png)
 ![SellProduct](Screenshots/SellProduct.png)
+![Product](Screenshots/Product.png)
 ![ERD](Screenshots/ERD.png)
