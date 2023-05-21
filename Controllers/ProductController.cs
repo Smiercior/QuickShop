@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace QuickShop.Controllers
 {
@@ -29,16 +30,6 @@ namespace QuickShop.Controllers
         [HttpPost]
         public IActionResult Product(SellProductModel sellProductModel)
         {
-            // foreach(var file in sellProductModel.imageFiles)
-            // {
-            //     Console.WriteLine(file.FileName);
-            // }
-            // foreach(var deliveryTypeCheckbox in sellProductModel.DeliveryTypeCheckboxes)
-            // {
-            //     Console.WriteLine(deliveryTypeCheckbox);
-            //     Console.WriteLine(sellProductModel.DeliveryTypePrices[deliveryTypeCheckbox]);
-            // }   
-
             // Validate data
             Console.WriteLine(sellProductModel.Price);
             if(ModelState.IsValid)
@@ -129,6 +120,7 @@ namespace QuickShop.Controllers
                             // Save and commit all changes
                             _dbContext.SaveChanges();
                             transaction.Commit();
+                            return RedirectToAction("Product", "Product", new {id = product.Id});
                         }
                         catch(Exception ex)
                         {
@@ -139,9 +131,9 @@ namespace QuickShop.Controllers
                                 Console.WriteLine(productId);
                                 _sellProductService.DeleteImageFiles(productId);
                             }
+                            return RedirectToAction("SellProduct", "Home", new {errorMessage = "Can't sell a product because the data is invalid"});
                         }
                     }
-                    return View();
                 }    
             }
             else
@@ -155,6 +147,22 @@ namespace QuickShop.Controllers
                 }        
             }
             return RedirectToAction("SellProduct", "Home", new {errorMessage = "Can't sell a product because the data is invalid"});
+        }
+
+        [HttpGet]
+        public IActionResult Product(int id)
+        {
+            //var product = _dbContext.Products.FirstOrDefault(p => p.Id == id);
+            var product = _dbContext.Products
+                .Include(p => p.Category)
+                .Include(p => p.Condition)
+                .Include(p => p.Person)
+                .Include(p => p.ProductImages)
+                .Include(p => p.ProductPrices)
+                .Include(p => p.DeliveryTypePrices)
+                .ThenInclude(deliveryTypePrice => deliveryTypePrice.DeliveryType)
+                .SingleOrDefault(p => p.Id == id);
+            return View(product);
         }
 
         [HttpGet]

@@ -25,6 +25,11 @@ body {
   color: orange;
 }
 
+.text-dark-70{
+  color: black;
+  opacity: 70%;
+}
+
 .search{
   height: 40px;
   font-size: medium;
@@ -45,6 +50,10 @@ body {
   background-color: rgb(241, 241, 241);
 }
 
+.bg-light-gray{
+  background-color: lightgray;
+}
+
 .bg-white{
   background-color: white;
 }
@@ -58,4 +67,43 @@ body {
 .borderGray{
   border-color: lightgray;
   border-radius: 10%;
+}
+
+.productImages{
+  width: 520px;
+  height: 600px;
+}
+
+img{
+  max-width: 100%;
+  max-width: 100%;
+}
+
+.productDetails{
+  margin-left: 5%;
+  margin-right: 5%;
+}
+
+.mt-small{
+  margin-top: 1%;
+}
+
+.w-10{
+  width: 10%;
+}
+
+.w-95{
+  width: 95%;
+}
+
+.font-s{
+  font-size: 90%;
+}
+
+.font-light-bold{
+  font-weight: 500;
+}
+
+.text-turquoise{
+  color: #23aea3;
 }
