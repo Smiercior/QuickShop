@@ -150,9 +150,15 @@ namespace QuickShop.Controllers
         }
 
         [HttpGet]
-        public IActionResult Product(int id)
+        public IActionResult Product(int id, string errorMessage = "")
         {
-            //var product = _dbContext.Products.FirstOrDefault(p => p.Id == id);
+            // Get any error message
+            if(!string.IsNullOrEmpty(errorMessage))
+            {
+                ViewData["ErrorMessage"] = errorMessage;
+            }
+
+            var currentUserId = _userManager.GetUserId(User);
             var product = _dbContext.Products
                 .Include(p => p.Category)
                 .Include(p => p.Condition)
@@ -162,7 +168,51 @@ namespace QuickShop.Controllers
                 .Include(p => p.DeliveryTypePrices)
                 .ThenInclude(deliveryTypePrice => deliveryTypePrice.DeliveryType)
                 .SingleOrDefault(p => p.Id == id);
+
+            ViewBag.isAuthor = currentUserId == product?.Person.Id ? true : false;
             return View(product);
+        }
+
+        [HttpPost]
+        public IActionResult DelProduct(int id = -1)
+        {
+            string errorMessage = "";
+
+            if(id != -1)
+            {
+                var product = _dbContext.Products
+                    .Include(p => p.Person)
+                    .SingleOrDefault(p => p.Id == id);
+
+                if(product != null)
+                {
+                    if(_userManager.GetUserId(User) == product.Person.Id)
+                    {
+                        try
+                        {
+                            _dbContext.Products.Remove(product);
+                            _dbContext.SaveChanges();
+                            _sellProductService.DeleteImageFiles(id);
+                        }
+                        catch(Exception ex)
+                        {
+                            Console.WriteLine($"Can't delete product, {ex.Message}");
+                            errorMessage = "Can't delete product";
+                            return Redirect($"{Request.Headers["Referer"]}?errorMessage={Uri.EscapeDataString(errorMessage)}");
+                        }
+                        Console.WriteLine("Done");
+                        return RedirectToAction("Index", "Home", new {successMessage = "Removed product"});
+                    }
+                    else
+                    {
+                        errorMessage = "This product isn't yours";
+                        return Redirect($"{Request.Headers["Referer"]}?errorMessage={Uri.EscapeDataString(errorMessage)}");
+                    }     
+                }
+            }
+            Console.WriteLine($"Can't find a product with this id {id}");
+            errorMessage = $"Can't find product";
+            return Redirect($"{Request.Headers["Referer"]}?errorMessage={Uri.EscapeDataString(errorMessage)}");
         }
 
         [HttpGet]

@@ -4,102 +4,133 @@
 }
 
 <div class="container-fluid p-0 bg-gray">
-    <div class="productDetails">
-        @if(Model != null)
-        {   <div class="row ms-5 mt-4">
-                 <div class="col-12 mb-2">
-                    <span>Category: <span class="orange">@Model.Category.Name</span></span>
-                </div> 
-            </div>
+    @if(!string.IsNullOrEmpty(ViewData["ErrorMessage"] as string))
+    {
+         <h4 class="alert alert-danger w-50 mb-3 mt-3 m-auto">@ViewData["ErrorMessage"]</h4>
+    }   
+    @if(Model == null)
+    {
+        <h4 class="alert alert-danger w-50 mb-3 mt-3 m-auto">This product doesn't exist</h4>
+    }
+    else
+    {      
+        <div class="productDetails">
+            @if(Model != null)
+            {   <div class="row ms-5 mt-4">
+                    <div class="col-12 mb-2">
+                        <span>Category: <span class="orange">@Model.Category.Name</span></span>
+                    </div> 
+                </div>
 
-            <div class="row mt-4 d-flex justify-content-center">
-                <div class="col-7 pe-2">
-                    <div class="p-4 bg-white">
-                        <h3 class="mb-4">@Model.Name</h3>
-                        <div id="carouselExampleControls" data-bs-interval="false" class="carousel slide" data-bs-ride="carousel">
-                            <div class="carousel-inner productImages m-auto">
-                                @{
-                                    int counter = 0;
-                                    foreach(var productImage in Model.ProductImages)
-                                    {
-                                        if(counter == 0)
+                <div class="row mt-4 d-flex justify-content-center">
+                    <div class="col-7 pe-2">
+                        <div class="p-4 bg-white">
+                            <h3 class="mb-4">@Model.Name</h3>
+                            <div id="carouselExampleControls" data-bs-interval="false" class="carousel slide" data-bs-ride="carousel">
+                                <div class="carousel-inner productImages m-auto">
+                                    @{
+                                        int counter = 0;
+                                        foreach(var productImage in Model.ProductImages)
                                         {
-                                            <div class="carousel-item active">
-                                                <img src="~/Media/ProductImages/@Model.Id/@productImage.ImageLink" class="productImage" alt="@productImage.ImageLink">
-                                            </div> 
+                                            if(counter == 0)
+                                            {
+                                                <div class="carousel-item active">
+                                                    <img src="~/Media/ProductImages/@Model.Id/@productImage.ImageLink" class="productImage" alt="@productImage.ImageLink">
+                                                </div> 
+                                            }
+                                            else
+                                            {
+                                                <div class="carousel-item">
+                                                    <img src="~/Media/ProductImages/@Model.Id/@productImage.ImageLink" class="productImage" alt="@productImage.ImageLink">
+                                                </div> 
+                                            }                            
+                                            counter++;
                                         }
-                                        else
-                                        {
-                                            <div class="carousel-item">
-                                                <img src="~/Media/ProductImages/@Model.Id/@productImage.ImageLink" class="productImage" alt="@productImage.ImageLink">
-                                            </div> 
-                                        }                            
-                                        counter++;
                                     }
+                                </div>
+                                <button style="display: none;" id="prevArrow" class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon bg-dark" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button style="display: none;" id="nextArrow"  class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon bg-dark" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-4 mt-3 bg-white">
+                            <h3 class="mb-5">Description</h3>
+                            <div>@Html.Raw(@Model.Description)</div>
+                        </div>
+                    </div>
+                    <div class="col-4 ps-2">
+                        <div class="p-4 bg-white">
+                            <div class="row">
+                                <h5>From @Model.Person.UserName.Substring(0,Model.Person.UserName.IndexOf('@')).ToUpper()</h5>
+                                @if (ViewBag.isAuthor)
+                                {
+                                    <div class="d-flex flex-wrap justify-content-center mt-2">
+                                        <button id="removeBtn" class="btn btn-danger w-25">Remove</button>
+                                        <button class="btn searchBtn w-25 ms-1">Edit</button>
+                                    </div>
                                 }
                             </div>
-                            <button style="display: none;" id="prevArrow" class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon bg-dark" aria-hidden="true"></span>
-                                <span class="visually-hidden">Previous</span>
-                            </button>
-                            <button style="display: none;" id="nextArrow"  class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
-                                <span class="carousel-control-next-icon bg-dark" aria-hidden="true"></span>
-                                <span class="visually-hidden">Next</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="p-4 mt-3 bg-white">
-                        <h3 class="mb-5">Description</h3>
-                        <div>@Html.Raw(@Model.Description)</div>
-                    </div>
-                </div>
-                <div class="col-4 ps-2">
-                    <div class="p-4 bg-white">
-                        <div class="row">
-                            <h5>From @Model.Person.UserName.Substring(0,Model.Person.UserName.IndexOf('@')).ToUpper()</h5>
-                        </div>
-                    </div> 
-                    <div class="p-4 mt-small bg-white">
-                        <div class="row">
-                            <h4>@Model.Name</h4>
-                            <h3 class="text-dark-70">@Model.ProductPrices.ToArray()[0].Price PLN</h3>
-                            <div class="border bg-light-gray border-1 w-95 mt-2 m-auto"></div>
-                            <span class="mt-1 text-secondary">Number of units</span>
-                            <div class="row ps-4">
-                                <button class="w-10 d-inline btn btn-white border border-secondary">-</button>
-                                <input class="w-25 d-inline text-center" type="text" value="1">
-                                <button class="w-10 d-inline btn btn-white border border-secondary">+</button>
+                        </div> 
+                        <div class="p-4 mt-small bg-white">
+                            <div class="row">
+                                <h4>@Model.Name</h4>
+                                <h3 class="text-dark-70">@Model.ProductPrices.ToArray()[0].Price PLN</h3>
+                                <div class="border bg-light-gray border-1 w-95 mt-2 m-auto"></div>
+                                <span class="mt-1 text-secondary">Number of units</span>
+                                <div class="row ps-4">
+                                    <button class="w-10 d-inline btn btn-white border border-secondary">-</button>
+                                    <input class="w-25 d-inline text-center" type="text" value="1">
+                                    <button class="w-10 d-inline btn btn-white border border-secondary">+</button>
+                                </div>
+                                <button class="btn mt-2 w-95 m-auto searchBtn">Buy and pay</button>
+                                <span class="text-secondary font-s">After pressing BUY AND PAY, you will go to the summary of delivery and payment for your purchase. Your bank account will not be charged yet</span>
                             </div>
-                            <button class="btn mt-2 w-95 m-auto searchBtn">Buy and pay</button>
-                            <span class="text-secondary font-s">After pressing BUY AND PAY, you will go to the summary of delivery and payment for your purchase. Your bank account will not be charged yet</span>
                         </div>
-                     </div>
-                     <div class="p-4 mt-small bg-white">
-                         <div class="row font-light-bold text-turquoise">
-                            <span class="text-center">COMPARE 10 OFFERS FOR SUCH A PRODUCT</span>
+                        <div class="p-4 mt-small bg-white">
+                            <div class="row font-light-bold text-turquoise">
+                                <span class="text-center">COMPARE 10 OFFERS FOR SUCH A PRODUCT</span>
+                            </div>
                         </div>
-                     </div>
 
-                     <div class="p-4 mt-3 bg-white">
-                         <h3>Delivery</h3>
-                         <div class="border bg-light-gray border-1 mt-2 ms-0"></div>
-                         @foreach (var deliveryTypePrice in Model.DeliveryTypePrices)
-                         {
-                             <div class="mt-3 mb-3">
-                                 <span class="d-inline mt-2">@deliveryTypePrice.DeliveryType.Name -</span>
-                                <span class="text-dark-70 d-inline">@deliveryTypePrice.Price PLN</span>
-                             </div>
+                        <div class="p-4 mt-3 bg-white">
+                            <h3>Delivery</h3>
                             <div class="border bg-light-gray border-1 mt-2 ms-0"></div>
-                         }
-                     </div>
+                            @foreach (var deliveryTypePrice in Model.DeliveryTypePrices)
+                            {
+                                <div class="mt-3 mb-3">
+                                    <span class="d-inline mt-2">@deliveryTypePrice.DeliveryType.Name -</span>
+                                    <span class="text-dark-70 d-inline">@deliveryTypePrice.Price PLN</span>
+                                </div>
+                                <div class="border bg-light-gray border-1 mt-2 ms-0"></div>
+                            }
+                        </div>
+                    </div>
                 </div>
+            }
+            else
+            {
+                <h4 class="alert alert-danger w-50 mb-3 mt-3 m-auto">That product doesn't exists</h4>
+            }
+        </div>
+        <div id = "overlay">
+            <div id="prompt">
+                <span>Do you wanto to remove: <span class="fw-bold">@Model.Name</span></span>
+                
+                    <form class="d-inline" asp-controller="Product" asp-action="DelProduct" method="post">      
+                        <div class="d-flex flex-wrap justify-content-center mt-2">
+                            <input type="hidden" name="id" value="@Model.Id">
+                            <button type="submit" class="btn successBtn text-light w-25">Yes</button>
+                            <button type="button" id="noRemoveBtn" class="btn cancelBtn text-light w-25 ms-2">No</button>
+                        </div>
+                    </form>
             </div>
-        }
-        else
-        {
-            <h4 class="alert alert-danger w-50 mb-3 mt-3 m-auto">That product doesn't exists</h4>
-        }
-    </div>
+        </div>
+    }  
 </div>
 
 @section Scripts {
@@ -108,9 +139,14 @@
             var carousel = document.getElementById("carouselExampleControls");
             var prevArrow = document.getElementById("prevArrow");
             var nextArrow = document.getElementById("nextArrow")
+            var removeBtn = document.getElementById("removeBtn");
+            var noRemoveBtn = document.getElementById("noRemoveBtn");
+            var overlay = document.getElementById("overlay");
 
             carousel.addEventListener("mouseenter", showArrows);
             carousel.addEventListener("mouseleave", hideArrows);
+            removeBtn.addEventListener("click", showRemoveProductPrompt);
+            noRemoveBtn.addEventListener("click", hideRemoveProductPrompt);
 
             function showArrows(e){
                 prevArrow.style.display = "block"
@@ -120,6 +156,14 @@
             function hideArrows(e){
                 prevArrow.style.display = "none"
                 nextArrow.style.display = "none"
+            }
+            
+            function showRemoveProductPrompt(e){
+                overlay.style.display = "flex";
+            }
+
+            function hideRemoveProductPrompt(e){
+                overlay.style.display = "none";
             }
         });
     </script>

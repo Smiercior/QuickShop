@@ -134,7 +134,7 @@ namespace QuickShop.Data
             .WithMany(product => product.DeliveryTypePrices)
             .HasForeignKey(deliveryTypePrice => deliveryTypePrice.ProductId)
             .IsRequired(false)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

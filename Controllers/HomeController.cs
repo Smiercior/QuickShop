@@ -17,8 +17,14 @@ namespace QuickShop.Controllers
             _dbContext = dbContext;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string successMessage = "")
         {
+            // Get any success message
+            if(!string.IsNullOrEmpty(successMessage))
+            {
+                ViewData["SuccessMessage"] = successMessage;
+            }
+
             return View();
         }
 
