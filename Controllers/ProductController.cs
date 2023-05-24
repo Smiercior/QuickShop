@@ -193,15 +193,14 @@ namespace QuickShop.Controllers
                             _dbContext.Products.Remove(product);
                             _dbContext.SaveChanges();
                             _sellProductService.DeleteImageFiles(id);
+                            return RedirectToAction("Index", "Home", new {successMessage = "Removed product"});
                         }
                         catch(Exception ex)
                         {
                             Console.WriteLine($"Can't delete product, {ex.Message}");
                             errorMessage = "Can't delete product";
                             return Redirect($"{Request.Headers["Referer"]}?errorMessage={Uri.EscapeDataString(errorMessage)}");
-                        }
-                        Console.WriteLine("Done");
-                        return RedirectToAction("Index", "Home", new {successMessage = "Removed product"});
+                        }   
                     }
                     else
                     {
