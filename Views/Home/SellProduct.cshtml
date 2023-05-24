@@ -40,7 +40,7 @@
 
                         <div class="form-group">
                             <label asp-for="Name" class="h4 p-0 mt-4">Description*</label><br>
-                            <textarea asp-for="Description" class="w-50 p-2" placeholder="Tell buyers something more"></textarea><br>
+                            <textarea asp-for="Description" id="descriptionEditor" class="w-50 p-2" placeholder="Tell buyers something more"></textarea><br>
                             <span asp-validation-for="Description" class="text-danger"></span>
                         </div>
                         
@@ -136,6 +136,9 @@
             inputPrice.addEventListener("input", updatedPrice);
             imagesInput.addEventListener("input", updatedImages);
             submitBtn.addEventListener("click", onSubmitBtn);
+
+            // Initialize CKEDITOR
+            CKEDITOR.replace('descriptionEditor');
 
             function updatedPrice(e){
                 if(checkPrice())  
