@@ -27,6 +27,22 @@ namespace QuickShop.Controllers
         }
 
         [Authorize]
+        public IActionResult SellProduct(string errorMessage = "")
+        {
+            // Get any error message
+            if(!string.IsNullOrEmpty(errorMessage))
+            {
+                ViewData["ErrorMessage"] = errorMessage;
+            }
+
+            ViewBag.Categories = _dbContext.Categories.ToList();
+            ViewBag.Conditions = _dbContext.Conditions.ToList();
+            ViewBag.DeliveryTypes = _dbContext.DeliveryTypes.ToList();
+            var sellProuctModel = new SellProductModel();
+            return View(sellProuctModel);
+        }
+
+        [Authorize]
         [HttpPost]
         public IActionResult Product(SellProductModel sellProductModel)
         {
@@ -131,7 +147,7 @@ namespace QuickShop.Controllers
                                 Console.WriteLine(productId);
                                 _sellProductService.DeleteImageFiles(productId);
                             }
-                            return RedirectToAction("SellProduct", "Home", new {errorMessage = "Can't sell a product because the data is invalid"});
+                            return RedirectToAction("SellProduct", "Product", new {errorMessage = "Can't sell a product because the data is invalid"});
                         }
                     }
                 }    
@@ -146,7 +162,7 @@ namespace QuickShop.Controllers
                     }
                 }        
             }
-            return RedirectToAction("SellProduct", "Home", new {errorMessage = "Can't sell a product because the data is invalid"});
+            return RedirectToAction("SellProduct", "Product", new {errorMessage = "Can't sell a product because the data is invalid"});
         }
 
         [HttpGet]

@@ -28,22 +28,6 @@ namespace QuickShop.Controllers
             return View();
         }
 
-        [Authorize]
-        public IActionResult SellProduct(string errorMessage = "")
-        {
-            // Get any error message
-            if(!string.IsNullOrEmpty(errorMessage))
-            {
-                ViewData["ErrorMessage"] = errorMessage;
-            }
-
-            ViewBag.Categories = _dbContext.Categories.ToList();
-            ViewBag.Conditions = _dbContext.Conditions.ToList();
-            ViewBag.DeliveryTypes = _dbContext.DeliveryTypes.ToList();
-            var sellProuctModel = new SellProductModel();
-            return View(sellProuctModel);
-        }
-
         public IActionResult Privacy()
         {
             return View();
