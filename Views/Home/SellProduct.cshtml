@@ -31,73 +31,78 @@
                     <input class="w-50 m-auto" name="imageFiles" id="imageFiles" type="file" accept=".jpg, .jpeg, .png" multiple>
                     <span class="text-danger" id="imageFilesWarning"></span>
                 </div>
-                    <div class="row bg-white w-75 mt-1 m-auto p-4 rounded-1">
-                        <div class="form-group">
-                            <label asp-for="Name" class="h4 p-0">Name*</label>
-                            <input asp-for="Name" class="form-control w-50 p-2" placeholder="Write what you wanna sell">
-                            <span asp-validation-for="Name" class="text-danger"></span>
-                        </div>
+                <div id="imagesDiv" class="row bg-white w-75 m-auto p-4 rounded-1 d-flex flex-wrap justify-content-start">
+                </div>
+                <div class="row bg-white w-75 m-auto p-4 rounded-1">
+                    <button type="button" id="clearImagesBtn" class="btn btn-danger w-25 ms-auto" disabled>Clear images</button>
+                </div>
+                <div class="row bg-white w-75 mt-1 m-auto p-4 rounded-1">
+                    <div class="form-group">
+                        <label asp-for="Name" class="h4 p-0">Name*</label>
+                        <input asp-for="Name" class="form-control w-50 p-2" placeholder="Write what you wanna sell">
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
 
-                        <div class="form-group">
-                            <label asp-for="Name" class="h4 p-0 mt-4">Description*</label><br>
-                            <textarea asp-for="Description" id="descriptionEditor" class="w-50 p-2" placeholder="Tell buyers something more"></textarea><br>
-                            <span asp-validation-for="Description" class="text-danger"></span>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label asp-for="Name" class="h4 p-0 mt-4">Category</label><br>
-                            <select asp-for="Category" class="w-50 p-2">
-                                <option>None</option>
-                                @foreach (var category in ViewBag.Categories)
-                                {
-                                    <option>@category.Name</option>
-                                }
-                            </select><br>
-                            <span asp-validation-for="Category" class="text-danger"></span>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label asp-for="Name" class="h4 p-0 mt-4">Condition</label><br>
-                            <select asp-for="Condition" class="w-50 p-2">
-                                @foreach (var condition in ViewBag.Conditions)
-                                {
-                                    <option>@condition.Name</option>
-                                }
-                            </select><br>
-                            <span asp-validation-for="Condition" class="text-danger"></span>
-                        </div>
-
-                        <div class="form-group">
-                            <label asp-for="Name" class="h4 p-0 mt-4">Price*</label><br>
-                            <input asp-for="Price" type="number" id="Price" class="w-50 p-2" placeholder="0.00"><br>
-                            <span id="priceWarning" class="text-danger"></span>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label asp-for="Name" class="p p-0 mt-4">Amount*</label><br>
-                            <input asp-for="Amount" class="w-50 p-2" value="1"><br>
-                            <span asp-validation-for="Amount" class="text-danger"></span>
-                        </div>
-                        
-                        <div class="form-group">
-                            <h4 class="h4 p-0 mt-4">Delivery type*</h4>
-                            @foreach (var deliveryType in ViewBag.DeliveryTypes)
+                    <div class="form-group">
+                        <label asp-for="Name" class="h4 p-0 mt-4">Description*</label><br>
+                        <textarea asp-for="Description" id="descriptionEditor" class="w-50 p-2" placeholder="Tell buyers something more"></textarea><br>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label asp-for="Name" class="h4 p-0 mt-4">Category</label><br>
+                        <select asp-for="Category" class="w-50 p-2">
+                            <option>None</option>
+                            @foreach (var category in ViewBag.Categories)
                             {
-                                <div class="row mt-3 d-flex align-items-center">
-                                    <div class="col-1">
-                                        <input class="checkbox-lg" type="checkbox" name="DeliveryTypeCheckboxes" value="@deliveryType.Name">
-                                    </div>
-                                    <div class="col-8">
-                                        <span class="text-secondary h5 fw-normal">@deliveryType.Name</span>
-                                    </div>
-                                    <div class="col-3">
-                                        <input class="w-50 text-center borderGray deliveryPrice" type="number" name="DeliveryTypePrices[@deliveryType.Name]" value="@deliveryType.Details">
-                                    </div>
-                                </div>  
+                                <option>@category.Name</option>
                             }
-                            <span class="text-danger" id="deliveryTypeWarning"></span>
-                        </div>
-                    </div>   
+                        </select><br>
+                        <span asp-validation-for="Category" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label asp-for="Name" class="h4 p-0 mt-4">Condition</label><br>
+                        <select asp-for="Condition" class="w-50 p-2">
+                            @foreach (var condition in ViewBag.Conditions)
+                            {
+                                <option>@condition.Name</option>
+                            }
+                        </select><br>
+                        <span asp-validation-for="Condition" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Name" class="h4 p-0 mt-4">Price*</label><br>
+                        <input asp-for="Price" type="number" id="Price" class="w-50 p-2" placeholder="0.00"><br>
+                        <span id="priceWarning" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label asp-for="Name" class="p p-0 mt-4">Amount*</label><br>
+                        <input asp-for="Amount" class="w-50 p-2" value="1"><br>
+                        <span asp-validation-for="Amount" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <h4 class="h4 p-0 mt-4">Delivery type*</h4>
+                        @foreach (var deliveryType in ViewBag.DeliveryTypes)
+                        {
+                            <div class="row mt-3 d-flex align-items-center">
+                                <div class="col-1">
+                                    <input class="checkbox-lg" type="checkbox" name="DeliveryTypeCheckboxes" value="@deliveryType.Name">
+                                </div>
+                                <div class="col-8">
+                                    <span class="text-secondary h5 fw-normal">@deliveryType.Name</span>
+                                </div>
+                                <div class="col-3">
+                                    <input class="w-50 text-center borderGray deliveryPrice" type="number" name="DeliveryTypePrices[@deliveryType.Name]" value="@deliveryType.Details">
+                                </div>
+                            </div>  
+                        }
+                        <span class="text-danger" id="deliveryTypeWarning"></span>
+                    </div>
+                </div>   
             </div>
             <div class="col-4">
                 <div class="row bg-white w-100 mt-2 p-2 rounded-1 sticky-top" style="top: 10px;">
@@ -132,10 +137,13 @@
             var warningPriceSpan = document.getElementById("priceWarning");
             var submitBtn = document.getElementById("submitBtn");
             var deliveryPriceInputs = document.getElementsByClassName("deliveryPrice");
+            var imagesDiv = document.getElementById("imagesDiv");
+            var clearImagesBtn = document.getElementById("clearImagesBtn");
 
             inputPrice.addEventListener("input", updatedPrice);
             imagesInput.addEventListener("input", updatedImages);
             submitBtn.addEventListener("click", onSubmitBtn);
+            clearImagesBtn.addEventListener("click", onClearImagesClick)
 
             // Initialize CKEDITOR
             CKEDITOR.replace('descriptionEditor');
@@ -180,12 +188,35 @@
                         clearImageInput();
                         return;
                     }
+
+                    // Preview images
+                    for(let i = 0; i < imageFiles.length; i++){
+                        let imageDiv = document.createElement("div");
+                        imageDiv.classList.add("previewImageDiv");
+
+                        let image = document.createElement("img");
+                        image.src = URL.createObjectURL(imageFiles.item(i));
+
+                        let removeBtn = document.createElement("button");
+                        removeBtn.type = "button"
+                        removeBtn.innerText = "x";
+                        removeBtn.classList.add("imageRemoveBtn");
+                        removeBtn.id = imageFiles.item(i).name;
+                        removeBtn.addEventListener("click", onRemoveImageBtnClick);
+
+                        imageDiv.appendChild(image);
+                        imagesDiv.appendChild(imageDiv);
+                        imageDiv.appendChild(removeBtn);
+                    }
+                    activeClearImagesBtn(true);
                     warningImagesSpan.innerHTML = "";
                 }
             }
 
             function clearImageInput(){
+                imagesDiv.innerHTML = "";
                 imagesInput.value = null;
+                activeClearImagesBtn(false);
             }
 
             function onSubmitBtn(e){
@@ -260,6 +291,34 @@
                 }
 
                 return true;
+            }
+
+            function onClearImagesClick(){
+                clearImageInput();
+            }
+
+            function activeClearImagesBtn(active)
+            {
+                if(active){
+                    clearImagesBtn.disabled = false;
+                }
+                else{
+                    clearImagesBtn.disabled = true;
+                }
+            }
+
+            function onRemoveImageBtnClick(e){
+                const imageFiles = imagesInput.files;
+                let finalImageFiles = new DataTransfer();
+                let imageName = e.target.id;
+                for(let i = 0; i < imageFiles.length; i++){
+                    if(imageFiles.item(i).name != imageName){
+                        finalImageFiles.items.add(imageFiles.item(i));
+                    }
+                }
+                imagesInput.files = finalImageFiles.files;
+                imagesDiv.innerHTML = "";
+                updatedImages();
             }
         });
     </script>
